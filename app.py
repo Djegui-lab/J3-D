@@ -111,8 +111,8 @@ def main():
     sheet_id = os.getenv('GOOGLE_SHEET_ID', '')
     
     # Afficher les valeurs chargées pour vérification
-    st.write("ID de l'annonce Facebook :", ad_id)
-    st.write("ID de la feuille Google Sheets :", sheet_id)
+    #st.write("ID de l'annonce Facebook :", ad_id)
+    #st.write("ID de la feuille Google Sheets :", sheet_id)
     
     limit = st.number_input("Nombre de leads à récupérer", min_value=1, step=1)
     
