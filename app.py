@@ -107,11 +107,13 @@ def main():
     
     # Charger les informations depuis les variables d'environnement
     access_token = os.getenv('FACEBOOK_ACCESS_TOKEN', '')
-    ad_ids = os.getenv('FACEBOOK_AD_IDS', '').split(',')  # Récupérer les IDs d'annonces depuis les variables d'environnement
     sheet_id = os.getenv('GOOGLE_SHEET_ID', '')
     
-    # Afficher les IDs d'annonces pour vérification
-    st.write("IDs des annonces Facebook configurés :", ad_ids)
+    # Saisie des IDs d'annonces Facebook
+    ad_ids_input = st.text_input("Entrez les IDs des annonces Facebook (séparés par des virgules)", "")
+    ad_ids = [ad_id.strip() for ad_id in ad_ids_input.split(",")] if ad_ids_input else []
+    
+    limit = st.number_input("Nombre de leads à récupérer par annonce", min_value=1, step=1)
     
     # Récupérer les leads lorsque le bouton est cliqué
     if st.button("Récupérer les leads"):
@@ -119,7 +121,7 @@ def main():
             all_leads = []
             for ad_id in ad_ids:
                 # Récupérer les leads depuis Facebook
-                leads = get_facebook_leads(access_token, ad_id.strip())  # Utiliser une valeur par défaut pour le nombre de leads
+                leads = get_facebook_leads(access_token, ad_id, limit)
                 st.write(f"{len(leads)} leads récupérés pour l'annonce {ad_id}.")
                 all_leads.extend(leads)
             
@@ -136,7 +138,7 @@ def main():
             else:
                 st.write("Aucune donnée à afficher.")
         else:
-            st.warning("Veuillez vérifier les variables d'environnement (FACEBOOK_ACCESS_TOKEN, FACEBOOK_AD_IDS, GOOGLE_SHEET_ID).")
+            st.warning("Veuillez remplir tous les champs.")
     
     # Connexion à Google Sheets pour insérer les leads
     if st.button("Insérer les leads dans Google Sheets"):
