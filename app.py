@@ -107,26 +107,24 @@ def main():
     
     # Charger les informations depuis les variables d'environnement
     access_token = os.getenv('FACEBOOK_ACCESS_TOKEN', '')
+    ad_id = os.getenv('FACEBOOK_AD_ID', '')
     sheet_id = os.getenv('GOOGLE_SHEET_ID', '')
     
-    # Saisie des IDs d'annonces Facebook
-    ad_ids_input = st.text_input("Entrez les IDs des annonces Facebook (séparés par des virgules)", "")
-    ad_ids = [ad_id.strip() for ad_id in ad_ids_input.split(",")] if ad_ids_input else []
+    # Afficher les valeurs chargées pour vérification
+    #st.write("ID de l'annonce Facebook :", ad_id)
+    #st.write("ID de la feuille Google Sheets :", sheet_id)
     
-    limit = st.number_input("Nombre de leads à récupérer par annonce", min_value=1, step=1)
+    limit = st.number_input("Nombre de leads à récupérer", min_value=1, step=1)
     
     # Récupérer les leads lorsque le bouton est cliqué
     if st.button("Récupérer les leads"):
-        if access_token and ad_ids and sheet_id:
-            all_leads = []
-            for ad_id in ad_ids:
-                # Récupérer les leads depuis Facebook
-                leads = get_facebook_leads(access_token, ad_id, limit)
-                st.write(f"{len(leads)} leads récupérés pour l'annonce {ad_id}.")
-                all_leads.extend(leads)
+        if access_token and ad_id and sheet_id:
+            # Récupérer les leads depuis Facebook
+            leads = get_facebook_leads(access_token, ad_id, limit)
+            st.write(f"{len(leads)} leads récupérés.")
             
             # Transformer les leads en tableau Pandas
-            leads_df = leads_to_dataframe(all_leads)
+            leads_df = leads_to_dataframe(leads)
             
             # Afficher les données sous forme de tableau structuré
             if not leads_df.empty:
